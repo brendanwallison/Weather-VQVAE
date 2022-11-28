@@ -8,9 +8,12 @@ from pytorch_lightning.loggers import WandbLogger
 from pytorch_lightning.callbacks import ModelCheckpoint
 
 
-dataset = DrivingDataset("./generative", frames=16, skip=16)
+dataset = DrivingDataset("./data", frames=16, skip=16)
+
+dataset[0]
 print(len(dataset))
-train_set, val_set = random_split(dataset, [10000, 3009], generator=torch.Generator().manual_seed(42))
+#train_set, val_set = random_split(dataset, [10000, 3009], generator=torch.Generator().manual_seed(42))
+train_set, val_set = random_split(dataset, [5, 1], generator=torch.Generator().manual_seed(42))
 
 train_loader = DataLoader(train_set, batch_size=16, num_workers=12)
 val_loader = DataLoader(val_set, batch_size=8, num_workers=12)

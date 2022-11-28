@@ -9,7 +9,7 @@ from collections import namedtuple
 import lmdb
 import pickle
 from torch.nn.functional import one_hot
-
+import tifffile as tiff 
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 PATH = "./tensor_data"
@@ -52,15 +52,13 @@ class DrivingDataset(Dataset):
         self.data = os.listdir(path)
         self.frames = frames
         self.skip = skip
-        self.transforms = transforms.Compose([
-            transforms.ToTensor()
-        ])
+        # self.transforms = transforms.Compose([
+        #     transforms.ToTensor()
+        # ])
 
     def to_tensor(self, idx):
-        img = PIL.Image.open(
-            self.path + f"/{idx}.png"
-        ).convert('RGB')
-        return self.transforms(img)
+        img = tiff.imread(self.path + f"/{idx + 1}.tiff").transpose(2, 0, 1) # C x H x W
+        return torch.tensor(img)
 
     def __len__(self):
         return 1 + (len(self.data) - self.frames) // self.skip
