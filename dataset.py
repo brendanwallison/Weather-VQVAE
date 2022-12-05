@@ -1,6 +1,7 @@
 import torch
 from tqdm import tqdm
 import os
+import glob
 from PIL import ImageFile
 import PIL
 from torch.utils.data import Dataset
@@ -49,7 +50,7 @@ class LatentDataset(Dataset):
 class DrivingDataset(Dataset):
     def __init__(self, path, frames=16, skip=8):
         self.path = path
-        self.data = os.listdir(path)
+        self.data = glob.glob(path + "*.tiff")
         self.frames = frames
         self.skip = skip
         # self.transforms = transforms.Compose([

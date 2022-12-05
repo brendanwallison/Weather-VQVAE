@@ -80,7 +80,7 @@ class Encoder(nn.Module):
 
         if stride == 4:
             blocks = [
-                nn.Conv3d(in_channel, channel, kernel_size=(4, 8, 8), stride=(2, 4, 4), padding=(1, 2, 2))
+                nn.Conv3d(in_channel, channel, kernel_size=(8, 4, 4), stride=(4, 2, 2), padding=(2, 1, 1))
             ]
 
         elif stride == 2:
@@ -99,6 +99,31 @@ class Encoder(nn.Module):
         return self.blocks(input)
 
 
+# class Encoder(nn.Module):
+#     def __init__(self, in_channel, channel, n_res_block, n_res_channel, stride):
+#         super().__init__()
+
+#         if stride == 4:
+#             blocks = [
+#                 nn.Conv3d(in_channel, channel, kernel_size=(4, 8, 8), stride=(2, 4, 4), padding=(1, 2, 2))
+#             ]
+
+#         elif stride == 2:
+#             blocks = [
+#                 nn.Conv3d(in_channel, channel, kernel_size=(4, 4, 4), stride=(2, 2, 2), padding=(1, 1, 1))
+#             ]
+
+#         for i in range(n_res_block):
+#             blocks.append(ResBlock(channel, n_res_channel))
+
+#         blocks.append(nn.ReLU(inplace=True))
+
+#         self.blocks = nn.Sequential(*blocks)
+
+#     def forward(self, input):
+#         return self.blocks(input)
+
+
 class Decoder(nn.Module):
     def __init__(
             self, in_channel, out_channel, channel, n_res_block, n_res_channel
@@ -114,7 +139,7 @@ class Decoder(nn.Module):
 
         blocks.extend(
             [
-                nn.ConvTranspose3d(channel, out_channel, kernel_size=(4, 8, 8), stride=(2, 4, 4), padding=(1, 2, 2))
+                nn.ConvTranspose3d(channel, out_channel, kernel_size=(8, 4, 4), stride=(4, 2, 2), padding=(2, 1, 1))
             ]
         )
 
@@ -226,7 +251,8 @@ class VQVAE(pl.LightningModule):
 
 
 if __name__ == "__main__":
-    rand_input = torch.rand((8, 3, 16, 256, 256))
+    #rand_input = torch.rand((8, 3, 16, 256, 256))
+    rand_input = torch.rand((8, 3, 128, 32, 32))
     bot_test = Encoder(3, 4, 8, 8, stride=4)
     top_test = Encoder(4, 4, 8, 8, stride=2)
 
